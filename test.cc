@@ -1,11 +1,19 @@
 // Author: Prashant Pandey <prashant.pandey@utah.edu>
 // For use in CS6968 & CS5968
 
+#include <cstdint>
 #include <iostream>
 #include <set>
 #include <chrono>
 #include <openssl/rand.h>
 #include "VanEmDeBoas.cpp"
+#include <cstddef>
+#include <cstdint>
+#include<iostream>
+#include <ostream>
+#include <sys/ucontext.h>
+#include <vector>
+#include <bits/stdc++.h>
 
 using namespace std::chrono;
 
@@ -56,8 +64,9 @@ int main(int argc, char** argv) {
 	}
 	t2 = high_resolution_clock::now();
 	std::cout << "Time to insert " + std::to_string(N) + " items: " + std::to_string(elapsed(t1, t2)) + " secs\n";
-
-    VanEmDBTree* Vtree = new VanEmDBTree(4294967295);
+    
+	// VanEmDBTree INSERT
+    VanEmDBTree* Vtree = new VanEmDBTree(UINT16_MAX - 1);
     // Insert N items from in_numbers to VEB Tree
     t1 = high_resolution_clock::now();
     for (uint32_t i = 0; i < N; ++i) {
@@ -78,6 +87,19 @@ int main(int argc, char** argv) {
 	t2 = high_resolution_clock::now();
 	std::cout << "Time to query " + std::to_string(N) + " items: " + std::to_string(elapsed(t1, t2)) + " secs\n";
 
+    // VanEmDBTree QUERY
+	// Query N items from in_numbers
+	// t1 = high_resolution_clock::now();
+	// for (uint32_t i = 0; i < N; ++i) {
+	// 	auto ret = query(Vtree, i);
+	// 	if (!ret) {
+	// 		std::cerr << "Find in VanEmDBTree failed. Item: " + std::to_string(i) + "\n";
+	// 		exit(0);
+	// 	}
+	// }
+	// t2 = high_resolution_clock::now();
+	// std::cout << "VanEmDBTree: Time to query " + std::to_string(N) + " items: " + std::to_string(elapsed(t1, t2)) + " secs\n";
+
 	// N Successor queries from out_numbers
 	t1 = high_resolution_clock::now();
 	for (uint32_t i = 0; i < N; ++i) {
@@ -89,6 +111,19 @@ int main(int argc, char** argv) {
 	}
 	t2 = high_resolution_clock::now();
 	std::cout << "Time to successor query " + std::to_string(N) + " items: " + std::to_string(elapsed(t1, t2)) + " secs\n";
+
+    // VanEmDBTree SUCCESSOR
+	// t1 = high_resolution_clock::now();
+	// for (uint32_t i = 0; i < N; ++i) {
+	// 	successor_ret s = getSuccessor(Vtree, i);
+	// 	if (!s.valid) {
+	// 		std::cerr << "successor query in VanEmDBTree failed. Item: " + std::to_string(i) + "\n";
+	// 		exit(0);
+	// 	}
+	// }
+	// t2 = high_resolution_clock::now();
+	// std::cout << "VanEmDBTree: Time to successor query " + std::to_string(N) + " items: " + std::to_string(elapsed(t1, t2)) + " secs\n";
+
 
 	return 0;
 }

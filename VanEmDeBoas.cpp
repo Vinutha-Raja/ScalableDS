@@ -1,6 +1,6 @@
 #include <cstddef>
 #include <cstdint>
-#include<iostream>
+#include <iostream>
 #include <ostream>
 #include <sys/ucontext.h>
 #include <vector>
@@ -25,18 +25,22 @@ public:
    vector<VanEmDBTree*> clusters;
     
    uint32_t getClusterCount(uint32_t u) {
-      return sqrt(u);
+      cout<<"getClusterCount"<<ceil(sqrt(u));
+      return ceil(sqrt(u));
    }
 
 
    uint32_t getHighBits(uint32_t X, uint32_t u) {
-      uint32_t shift_val = log2(u)/ 2;
+
+      uint32_t shift_val = ceil(log2(u))/ 2;
+      cout<<"shift_val"<<shift_val;
       uint32_t X_h = X >> shift_val;
       return X_h;
    }
 
    uint32_t getLowBits(uint32_t X, uint32_t u) {
-      uint32_t shift_val = log2(u)/ 2;
+      uint32_t shift_val = ceil(log2(u))/ 2;
+      cout<<"shift_val"<<shift_val;
       uint32_t X_h = X >> shift_val;
       uint32_t X_l = X - (X_h << shift_val);
       return X_l;
@@ -59,12 +63,15 @@ public:
        } 
        else {
           uint32_t numClusters = getClusterCount(u);
+         //  cout<<"after numclusters";
           summary = new VanEmDBTree(numClusters);
+         //  cout<<"after summary";
           clusters = vector<VanEmDBTree *> (numClusters, nullptr);
-
+         //  cout<<"after clusters";
           for (uint32_t i = 0; i < numClusters; i++) {
              clusters[i] = new VanEmDBTree(numClusters);
           }
+         //  cout<<"after 1 clusters";
        }
     }
 };
@@ -75,28 +82,28 @@ void insert(VanEmDBTree* treeNode, uint32_t X){
       treeNode->max_val = X;
       treeNode->min_val = X;
       treeNode->isEmpty = false;
-      cout<<"treeNode->max_val: "<<treeNode->max_val<<" treeNode->min_val: "<<treeNode->min_val<<endl;
+      // cout<<"treeNode->max_val: "<<treeNode->max_val<<" treeNode->min_val: "<<treeNode->min_val<<endl;
    } 
    if (X > treeNode->max_val) {
       treeNode->max_val = X;
-      cout<<"1treeNode->max_val: "<<treeNode->max_val<<" treeNode->min_val: "<<treeNode->min_val<<endl;
+      // cout<<"1treeNode->max_val: "<<treeNode->max_val<<" treeNode->min_val: "<<treeNode->min_val<<endl;
    } else if (X < treeNode->min_val) {
       treeNode->min_val = X;
-      cout<<"2treeNode->max_val: "<<treeNode->max_val<<" treeNode->min_val: "<<treeNode->min_val<<endl;
+      // cout<<"2treeNode->max_val: "<<treeNode->max_val<<" treeNode->min_val: "<<treeNode->min_val<<endl;
    }
 
    if (treeNode->u_size > 2) {
       uint32_t X_h = treeNode->getHighBits(X, treeNode->u_size);
       uint32_t X_l = treeNode->getLowBits(X, treeNode->u_size);
-      cout<<"X_h: "<<X_h<<"X_l: "<<X_l<<endl;
+      // cout<<"X_h: "<<X_h<<"X_l: "<<X_l<<endl;
       if (treeNode->clusters[X_h]->isEmpty) {
-         cout<<"inserting X_h: "<<X_h<<" in summary cluster: "<<endl;
+         // cout<<"inserting X_h: "<<X_h<<" in summary cluster: "<<endl;
          insert(treeNode->summary, X_h);
-         cout<<endl;
+         // cout<<endl;
       } 
-      cout<<"inserting X_l: "<<X_l<<" in cluster : "<< X_h<<endl;
+      // cout<<"inserting X_l: "<<X_l<<" in cluster : "<< X_h<<endl;
       insert(treeNode->clusters[X_h], X_l);
-      cout<<endl;
+      // cout<<endl;
       
    }
 }
@@ -215,48 +222,50 @@ void print(VanEmDBTree* treeNode) {
 
 }
 
-int main() {
-   cout << "Hello World. This is C++ program" << endl;
-   VanEmDBTree* Vtree = new VanEmDBTree(pow(2, 16));
-   // insert(Vtree, 1);
-   // cout<<"min: "<<Vtree->min_val<<endl;
-   // cout<<"max: "<<Vtree->max_val<<endl;
-   for( uint32_t i = 2; i < 16; i= i+ 2){
-      cout<<"inserting: "<<i<<endl;
+// int main() {
+//    cout << "Hello World. This is C++ program" << endl;
+//    uint32_t u = uint32_t(pow(2, 32) - 1);
+//    cout<<"u: "<<u;
+//    VanEmDBTree* Vtree = new VanEmDBTree(UINT32_MAX);
+//    // insert(Vtree, 1);
+//    // cout<<"min: "<<Vtree->min_val<<endl;
+//    // cout<<"max: "<<Vtree->max_val<<endl;
+//    for( uint32_t i = 2; i < 16; i= i+ 2){
+//       cout<<"inserting: "<<i<<endl;
       
-      insert(Vtree, i);
-      // print(Vtree);
-      // cout<<"______________"<<endl<<"\n";
-   }
+//       insert(Vtree, i);
+//       // print(Vtree);
+//       // cout<<"______________"<<endl<<"\n";
+//    }
 
-   cout<<"min: "<<Vtree->min_val<<endl;
+//    cout<<"min: "<<Vtree->min_val<<endl;
 
-   cout<<"max: "<<Vtree->max_val<<endl;
-   // print(Vtree);
-   for (uint32_t i = 0; i < 16; i++ ){
-      successor_ret s = getSuccessor(Vtree, i);
-      if (s.valid) {
-      cout<<"successor of "<<i<<" is "<<s.successor<<endl;
-      } else {
-         cout<<"successor of "<<i<<" is not valid"<<endl;
-      }
+//    cout<<"max: "<<Vtree->max_val<<endl;
+//    // print(Vtree);
+//    for (uint32_t i = 0; i < 16; i++ ){
+//       successor_ret s = getSuccessor(Vtree, i);
+//       if (s.valid) {
+//       cout<<"successor of "<<i<<" is "<<s.successor<<endl;
+//       } else {
+//          cout<<"successor of "<<i<<" is not valid"<<endl;
+//       }
 
-   }
+//    }
    
 
 
-   // cout<<"successor of 2: "<<successor(Vtree, 2);
-   // cout<<"successor of 3: "<<successor(Vtree, 3);
-   for( uint32_t i = 1; i < 16; i++){
-      cout<<"querying: "<<i<<endl;
-      cout<<query(Vtree, i)<<endl;
-      cout<<"______________"<<endl<<"\n";
-   }
-   // cout<< "query 1: "<<query(Vtree, 1);
-   // cout<< "query 3: "<<query(Vtree, 3);
-   // cout<< "query 2: "<<query(Vtree, 2);
-   // cout<< "query 4: "<<query(Vtree, 4);
+//    // cout<<"successor of 2: "<<successor(Vtree, 2);
+//    // cout<<"successor of 3: "<<successor(Vtree, 3);
+//    for( uint32_t i = 1; i < 16; i++){
+//       cout<<"querying: "<<i<<endl;
+//       cout<<query(Vtree, i)<<endl;
+//       cout<<"______________"<<endl<<"\n";
+//    }
+//    // cout<< "query 1: "<<query(Vtree, 1);
+//    // cout<< "query 3: "<<query(Vtree, 3);
+//    // cout<< "query 2: "<<query(Vtree, 2);
+//    // cout<< "query 4: "<<query(Vtree, 4);
 
-   return 0;
+//    return 0;
 
-}
+// }
