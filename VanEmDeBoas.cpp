@@ -61,7 +61,8 @@ public:
 
        if (u_size <= 256) {
           summary = nullptr;
-          for (u_int8_t i = 0; i< UINT8_MAX; i++){
+          finalClusters[0] = UINT8_MAX;
+          for (u_int8_t i = 1; i < UINT8_MAX; i++){
             //  cout<<"init";
              finalClusters[i] = 0;
           }
@@ -113,12 +114,12 @@ successor_ret successor(VanEmDBTree* treeNode, uint32_t X){
    if ( treeNode->u_size <= 256) {
       cout<<"heeeree";
       if (!treeNode->isEmpty) {
-         for (uint8_t i = X ; i < UINT8_MAX; i++) {
+         for (uint8_t i = X ; i <= UINT8_MAX; i++) {
             if (treeNode->finalClusters[i] == i) {
                successor_ret *succ = new successor_ret();
                succ->successor = i;
                succ->valid = true;
-               cout<<"X: "<<X<<"returning...."<<unsigned(i);
+               cout<<"X: "<<X<<"returning...."<<unsigned(i)<<"min:"<<treeNode->min_val;
                return *succ;
 
             }
@@ -160,7 +161,7 @@ successor_ret successor(VanEmDBTree* treeNode, uint32_t X){
       succ->valid = true;
       return *succ;
    } else if (!treeNode->isEmpty && X > treeNode->max_val) {
-      cout<<"check with min value;"<<endl;
+      cout<<"check with max value;"<<endl;
       successor_ret *succ = new successor_ret();
       // succ->successor = treeNode->min_val;
       succ->valid = false;
@@ -285,7 +286,7 @@ int main() {
    // insert(Vtree, 1);
    // cout<<"min: "<<Vtree->min_val<<endl;
    // cout<<"max: "<<Vtree->max_val<<endl;
-   for( uint32_t i = 0; i < 1600; i= i+ 10){
+   for( uint32_t i = 0; i < 1600; i= i+ 5){
       cout<<"inserting: "<<i<<endl;
       
       insert(Vtree, i);
