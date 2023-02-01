@@ -33,16 +33,13 @@ public:
 
 
    uint32_t getHighBits(uint32_t X, uint32_t u) {
-
       uint32_t shift_val = ceil(log2(u))/ 2;
-      // cout<<"shift_val"<<shift_val;
       uint32_t X_h = X >> shift_val;
       return X_h;
    }
 
    uint32_t getLowBits(uint32_t X, uint32_t u) {
       uint32_t shift_val = ceil(log2(u))/ 2;
-      // cout<<"shift_val"<<shift_val;
       uint32_t X_h = X >> shift_val;
       uint32_t X_l = X - (X_h << shift_val);
       return X_l;
@@ -63,8 +60,7 @@ public:
           summary = nullptr;
           finalClusters[0] = UINT8_MAX;
           for (u_int8_t i = 1; i < UINT8_MAX; i++){
-            //  cout<<"init";
-             finalClusters[i] = 0;
+            finalClusters[i] = 0;
           }
        } 
 
@@ -94,15 +90,11 @@ void insert(VanEmDBTree* treeNode, uint32_t X){
 
    if (treeNode->u_size <= 256) {
       treeNode->finalClusters[X] = X;
-      cout<<"X:"<<unsigned(treeNode->finalClusters[X]);
    }
 
    if (treeNode->u_size > 256) {
       uint32_t X_h = treeNode->getHighBits(X, treeNode->u_size);
       uint32_t X_l = treeNode->getLowBits(X, treeNode->u_size);
-      // if (treeNode->clusters[X_h] == nullptr) {
-      //    treeNode->clusters[X_h] = new VanEmDBTree(treeNode->u_size);
-      // }
       if (treeNode->clusters[X_h]->isEmpty) {
          insert(treeNode->summary, X_h);
       } 
@@ -112,16 +104,14 @@ void insert(VanEmDBTree* treeNode, uint32_t X){
 
 successor_ret successor(VanEmDBTree* treeNode, uint32_t X){
    if ( treeNode->u_size <= 256) {
-      cout<<"heeeree";
       if (!treeNode->isEmpty) {
          for (uint8_t i = X ; i <= UINT8_MAX; i++) {
             if (treeNode->finalClusters[i] == i) {
                successor_ret *succ = new successor_ret();
                succ->successor = i;
                succ->valid = true;
-               cout<<"X: "<<X<<"returning...."<<unsigned(i)<<"min:"<<treeNode->min_val;
+               // cout<<"X: "<<X<<"returning...."<<unsigned(i)<<"min:"<<treeNode->min_val;
                return *succ;
-
             }
          }
          successor_ret *succ = new successor_ret();
@@ -155,15 +145,12 @@ successor_ret successor(VanEmDBTree* treeNode, uint32_t X){
    //    return *succ;
    // } else 
    if (!treeNode->isEmpty && X < treeNode->min_val) {
-      cout<<"check with min value;"<<endl;
       successor_ret *succ = new successor_ret();
       succ->successor = treeNode->min_val;
       succ->valid = true;
       return *succ;
    } else if (!treeNode->isEmpty && X > treeNode->max_val) {
-      cout<<"check with max value;"<<endl;
       successor_ret *succ = new successor_ret();
-      // succ->successor = treeNode->min_val;
       succ->valid = false;
       return *succ;
    }
@@ -253,12 +240,6 @@ bool query(VanEmDBTree* treeNode, uint32_t X) {
 }
 
 successor_ret getSuccessor(VanEmDBTree* treeNode, uint32_t X) {
-   // if (query(treeNode, X)) {
-   //    successor_ret *succ = new successor_ret();
-   //    succ->successor = X;
-   //    succ->valid = true;
-   //    return *succ;
-   // }
    successor_ret s = successor(treeNode, X);
    return s;
 }
@@ -278,50 +259,63 @@ void print(VanEmDBTree* treeNode) {
 
 }
 
-int main() {
-   cout << "Hello World. This is C++ program" << endl;
-   uint32_t u = uint32_t(pow(2, 32) - 1);
-   cout<<"u: "<<u;
-   VanEmDBTree* Vtree = new VanEmDBTree(UINT32_MAX);
-   // insert(Vtree, 1);
-   // cout<<"min: "<<Vtree->min_val<<endl;
-   // cout<<"max: "<<Vtree->max_val<<endl;
-   for( uint32_t i = 0; i < 1600; i= i+ 5){
-      cout<<"inserting: "<<i<<endl;
+// int main() {
+//    cout << "Hello World. This is C++ program" << endl;
+//    uint32_t u = uint32_t(pow(2, 32) - 1);
+//    cout<<"u: "<<u;
+//    VanEmDBTree* Vtree = new VanEmDBTree(UINT32_MAX);
+//    // insert(Vtree, 1);
+//    // cout<<"min: "<<Vtree->min_val<<endl;
+//    // cout<<"max: "<<Vtree->max_val<<endl;
+//    // for( uint32_t i = 512; i < 131072; i= i+ 5){
+//    //    cout<<"inserting: "<<i<<endl;
       
-      insert(Vtree, i);
-      // print(Vtree);
-      // cout<<"______________"<<endl<<"\n";
-   }
+//    //    insert(Vtree, i);
+//    //    // print(Vtree);
+//    //    // cout<<"______________"<<endl<<"\n";
+//    // }
+// // 3304136336,2597322298,2586798070,1708109324,1114020553,3093839019,4077717216,2731916208,3199594294,403243621
+// // 2355525110,3995499145,1410364849,2415283070,2828064020,560803598,686011081,1321815037,597994729,2758805216 - 4125848878
+//    insert(Vtree, 2355525110);
+//    insert(Vtree, 3995499145);
+//    insert(Vtree, 1410364849);
+//    insert(Vtree, 2415283070);
+//    insert(Vtree, 2828064020);
+//    insert(Vtree, 560803598);
+//    insert(Vtree, 686011081);
+//    insert(Vtree, 1321815037);
+//    insert(Vtree, 597994729);
+//    // insert(Vtree, 2731916208);
+//    insert(Vtree, 2758805216);
 
-   cout<<"min: "<<Vtree->min_val<<endl;
+//    cout<<"min: "<<Vtree->min_val<<endl;
 
-   cout<<"max: "<<Vtree->max_val<<endl;
-   // print(Vtree);
-   for (uint32_t i = 0; i < 1900; i++ ){
-      successor_ret s = getSuccessor(Vtree, i);
-      if (s.valid) {
-      cout<<"successor of "<<i<<" is "<<s.successor<<endl;
-      } else {
-         cout<<"successor of "<<i<<" is not valid"<<endl;
-      }
+//    cout<<"max: "<<Vtree->max_val<<endl;
+//    // print(Vtree);
+//    for (uint32_t i = 4125848878; i < 4125848878 + 1; i++ ){
+//       successor_ret s = getSuccessor(Vtree, i);
+//       if (s.valid) {
+//       cout<<"successor of "<<i<<" is "<<s.successor<<endl;
+//       } else {
+//          cout<<"successor of "<<i<<" is not valid"<<endl;
+//       }
 
-   }
+//    }
    
 
 
-   // cout<<"successor of 2: "<<successor(Vtree, 2);
-   // cout<<"successor of 3: "<<successor(Vtree, 3);
-   for( uint32_t i = 1; i < 1600; i++){
-      cout<<"querying: "<<i<<endl;
-      cout<<query(Vtree, i)<<endl;
-      cout<<"______________"<<endl<<"\n";
-   }
-   // cout<< "query 1: "<<query(Vtree, 1);
-   // cout<< "query 3: "<<query(Vtree, 3);
-   // cout<< "query 2: "<<query(Vtree, 2);
-   // cout<< "query 4: "<<query(Vtree, 4);
+//    // cout<<"successor of 2: "<<successor(Vtree, 2);
+//    // cout<<"successor of 3: "<<successor(Vtree, 3);
+//    for( uint32_t i = 1; i < 100; i++){
+//       cout<<"querying: "<<i<<endl;
+//       cout<<query(Vtree, i)<<endl;
+//       cout<<"______________"<<endl<<"\n";
+//    }
+//    // cout<< "query 1: "<<query(Vtree, 1);
+//    // cout<< "query 3: "<<query(Vtree, 3);
+//    // cout<< "query 2: "<<query(Vtree, 2);
+//    // cout<< "query 4: "<<query(Vtree, 4);
 
-   return 0;
+//    return 0;
 
-}
+// }
