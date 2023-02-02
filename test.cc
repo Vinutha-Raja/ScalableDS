@@ -105,7 +105,7 @@ int main(int argc, char** argv) {
 	std::cout << "VanEmDBTree: Time to query " + std::to_string(N) + " items: " + std::to_string(elapsed(t1, t2)) + " secs\n";
 
 	// N Successor queries correctness from out_numbers
-	t1 = high_resolution_clock::now();
+	// t1 = high_resolution_clock::now();
 	for (uint32_t i = 0; i < N; ++i) {
 		auto ret = bst.lower_bound(out_numbers[i]);
 		if ((ret != bst.end() && *ret < out_numbers[i])) {
@@ -122,6 +122,14 @@ int main(int argc, char** argv) {
 		}
 	}
 
+	t1 = high_resolution_clock::now();
+	for (uint32_t i = 0; i < N; ++i) {
+		auto ret = bst.lower_bound(out_numbers[i]);
+		if ((ret != bst.end() && *ret < out_numbers[i])) {
+			std::cerr << "successor query in BST failed. Item: " + std::to_string(out_numbers[i]) + " Successor: " + std::to_string(*ret) + "\n";
+			exit(0);
+		}
+	}
 	t2 = high_resolution_clock::now();
 	std::cout << "Time to successor query " + std::to_string(N) + " items: " + std::to_string(elapsed(t1, t2)) + " secs\n";
 

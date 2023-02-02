@@ -123,27 +123,6 @@ successor_ret successor(VanEmDBTree* treeNode, uint32_t X){
          return *succ;
       }
    }
-
-   // if ( treeNode->u_size == 2) {
-   //    if ( !treeNode->isEmpty && X == 0 && treeNode->max_val == 1) {
-   //       successor_ret *succ = new successor_ret();
-   //       succ->successor = treeNode->max_val;
-   //       succ->valid = true;
-   //       return *succ;
-   //    } else {
-   //       successor_ret *succ = new successor_ret();
-   //       succ->valid = false;
-   //       return *succ;
-   //    }
-   // } 
-
-   // if (!treeNode->isEmpty && X == treeNode->max_val){
-   //    cout<<"check with max value;"<<X<<", "<<treeNode->max_val<<endl;
-   //    successor_ret *succ = new successor_ret();
-   //    succ->successor = treeNode->max_val;
-   //    succ->valid = true;
-   //    return *succ;
-   // } else 
    if (!treeNode->isEmpty && X < treeNode->min_val) {
       successor_ret *succ = new successor_ret();
       succ->successor = treeNode->min_val;
@@ -194,26 +173,6 @@ successor_ret successor(VanEmDBTree* treeNode, uint32_t X){
 
 
 bool query(VanEmDBTree* treeNode, uint32_t X) {
-
-   // if (treeNode->isEmpty || X < treeNode->min_val || X > treeNode->max_val) {
-   //    return false;
-   // }
-
-   // if (treeNode->min_val == X || treeNode->max_val == X){
-   //    return true;
-   // } 
-   // else {
-   //    if (treeNode->u_size == 2) {
-   //       return false;
-   //    } else {
-   //       uint32_t X_h = treeNode->getHighBits(X, treeNode->u_size);
-   //       uint32_t X_l = treeNode->getLowBits(X, treeNode->u_size);
-   //       // if (treeNode->clusters[X_h] == nullptr) {
-   //       //    return false;
-   //       // }
-   //       return query(treeNode->clusters[X_h], X_l);
-   //    }
-   // }
 
    if (treeNode->isEmpty || X < treeNode->min_val || X > treeNode->max_val) {
       return false;
