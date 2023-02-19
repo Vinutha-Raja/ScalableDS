@@ -63,7 +63,7 @@ public:
         return 0;
     }
 
-    std::set<uint64_t> heavyHitters(uint64_t phi) {
+    std::set<uint64_t> heavyHitters(double phi) {
         std::set<uint64_t> heavyhitters;
         for (uint64_t i = 0; i < K; ++i) {
             if (C[i] >= N * phi) {
@@ -74,3 +74,23 @@ public:
     }
 
 };
+
+
+int main() {
+   cout << "Hello World. This is C++ program" << endl;
+   MisraGriesDS mg = MisraGriesDS(100, 10);
+   for (uint64_t i = 0; i < 10; ++i) {
+       mg.add( i);
+   }
+   mg.add( 10);
+   mg.add( 10);
+   mg.add( 10);
+   mg.add( 10);
+
+
+   cout<<"mg.estimate(10) :"<<mg.estimate(10);
+   std::set<uint64_t> hh = mg.heavyHitters(0.01);
+    for (auto it = hh.begin(); it !=
+                             hh.end(); ++it)
+        cout << ' ' << *it;
+}
