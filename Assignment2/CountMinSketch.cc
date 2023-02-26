@@ -20,26 +20,25 @@ public:
     int* S;
     int** C;
     double phi;
-    std::set<uint64_t> heavyhitters;
+    std::map<uint64_t, uint64_t, std::greater<uint64_t> > heavyhitters;
 
-    CountMinSketch(uint64_t n, uint64_t k, int t, double phi){
+    CountMinSketch(uint64_t n, uint64_t k, int t, double phi_val){
         N = n;
         K = k;
         T = t;
-        phi = phi;
+        phi = phi_val;
         H = (int *)malloc(T * sizeof(int));
         C = new int*[T];
         for (int i = 0; i < T; i++) {
             C[i] = new int[K];
         }
 
-
         for (uint64_t i = 0; i < K; ++i) {
             H[i] = std::experimental::randint(0, (int)N); 
         }   
 
-        for (uint64_t i = 0; i < t; ++i) {
-            for (int j = 0; j < k; j++) {
+        for (int i = 0; i < t; ++i) {
+            for (uint64_t j = 0; j < k; j++) {
                 C[i][j] = 0;
             }
         }      
@@ -65,7 +64,8 @@ public:
         double freq = estimate(num);
         // cout<<freq<<endl;
         if (freq >= phi) {
-            heavyhitters.insert(num);
+            heavyhitters.insert(std::make_pair(num, freq * N));
+            // heavyhitters.insert(num);
             // cout<<num<<endl;
         }
     }
@@ -77,41 +77,41 @@ public:
             f[i] = (double) (C[i][j]) / N;
             // cout<<f[i]<<endl;
         }
-        double ans ;
+        // double ans ;
         sort(f, f + T);
         return f[0];
     }
 
-    std::set<uint64_t> heavyHitters(double phi) {
+    std::map<uint64_t, uint64_t, std::greater<uint64_t> > heavyHitters(double phi) {
         return heavyhitters;
     }
 
 };
 
-int main() {
-   cout << "Hello World. This is C++ program" << endl;
-   CountMinSketch cs = CountMinSketch(100, 10, 10, 0.1);
-   for (uint64_t i = 0; i < 10; ++i) {
-       cs.add( i);
-   }
-   cs.add( 10);
-   cs.add( 10);
-   cs.add( 10);
-   cs.add( 10);
+// int main() {
+//    cout << "Hello World. This is C++ program" << endl;
+//    CountMinSketch cs = CountMinSketch(100, 10, 10, 0.1);
+//    for (uint64_t i = 0; i < 10; ++i) {
+//        cs.add( i);
+//    }
+//    cs.add( 10);
+//    cs.add( 10);
+//    cs.add( 10);
+//    cs.add( 10);
 
-    for (uint64_t i = 0; i < cs.T; ++i) {
-        for (int j = 0; j < cs.K; j++) {
-            cout<<' '<<cs.C[i][j];
-        }
-        cout<<endl;
-    }  
+//     for (uint64_t i = 0; i < cs.T; ++i) {
+//         for (int j = 0; j < cs.K; j++) {
+//             cout<<' '<<cs.C[i][j];
+//         }
+//         cout<<endl;
+//     }  
 
-    for (uint64_t i = 0; i < cs.T; ++i) {
-        cout<<cs.H[i]<<endl;
-    }
+//     for (uint64_t i = 0; i < cs.T; ++i) {
+//         cout<<cs.H[i]<<endl;
+//     }
 
-   cout<<"cs.estimate(10) :"<<cs.estimate(10);
-   std::set<uint64_t> hh = cs.heavyHitters(0.01);
-   for (auto it = hh.begin(); it !=hh.end(); ++it)
-        cout << ' ' << *it;
-}
+//    cout<<"cs.estimate(10) :"<<cs.estimate(10);
+//    std::set<uint64_t> hh = cs.heavyHitters(0.01);
+//    for (auto it = hh.begin(); it !=hh.end(); ++it)
+//         cout << ' ' << *it;
+// }

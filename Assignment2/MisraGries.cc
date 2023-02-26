@@ -28,30 +28,25 @@ public:
     }
 
     void add(uint64_t num) {
-        bool found = false;
         for (uint64_t i = 0; i < K; ++i) {
             if (Y[i] == num) {
                 C[i] = C[i] + 1;
-                found = true;
-                break;
+                return;
             }
         }
-        found = false;
-        if (!found) {
-            for (uint64_t i = 0; i < K; ++i) {
-                if (C[i] == 0) {
-                    Y[i] = num;
-                    C[i] = 1;
-                    found = true;
-                    break;
-                }
+        
+        for (uint64_t i = 0; i < K; ++i) {
+            if (C[i] == 0) {
+                Y[i] = num;
+                C[i] = 1;
+                return;
             }
         }
-        if (!found) {
-            for (uint64_t i = 0; i < K; ++i) {
-                C[i] = C[i] - 1;
-            }
+        
+        for (uint64_t i = 0; i < K; ++i) {
+            C[i] = C[i] - 1;
         }
+        
     }
 
     uint64_t estimate(uint64_t num) {
@@ -63,11 +58,13 @@ public:
         return 0;
     }
 
-    std::set<uint64_t> heavyHitters(double phi) {
-        std::set<uint64_t> heavyhitters;
+    std::multimap<uint64_t, uint64_t, std::greater<uint64_t> > heavyHitters(double phi) {
+        std::multimap<uint64_t, uint64_t, std::greater<uint64_t> > heavyhitters;
+        // std::set<uint64_t> heavyhitters;
         for (uint64_t i = 0; i < K; ++i) {
             if (C[i] >= N * phi) {
-                heavyhitters.insert(Y[i]);
+                heavyhitters.insert(std::make_pair(C[i], Y[i]));
+                // heavyhitters.insert(Y[i]);
             }
         }
         return heavyhitters;
@@ -76,21 +73,29 @@ public:
 };
 
 
-int main() {
-   cout << "Hello World. This is C++ program" << endl;
-   MisraGriesDS mg = MisraGriesDS(100, 10);
-   for (uint64_t i = 0; i < 10; ++i) {
-       mg.add( i);
-   }
-   mg.add( 10);
-   mg.add( 10);
-   mg.add( 10);
-   mg.add( 10);
+// int main() {
+//    cout << "Hello World. This is C++ program" << endl;
+//    MisraGriesDS mg = MisraGriesDS(100, 10);
+//    for (uint64_t i = 0; i < 10; ++i) {
+//        mg.add( i);
+//    }
+//    mg.add( 10);
+//    mg.add( 10);
+//    mg.add( 10);
+//    mg.add( 10);
 
 
-   cout<<"mg.estimate(10) :"<<mg.estimate(10);
-   std::set<uint64_t> hh = mg.heavyHitters(0.01);
-    for (auto it = hh.begin(); it !=
-                             hh.end(); ++it)
-        cout << ' ' << *it;
-}
+//    cout<<"mg.estimate(10) :"<<mg.estimate(10);
+
+//    std::multimap<uint64_t, uint64_t, std::greater<uint64_t> > HH = mg.heavyHitters(0.01);
+//    std::cout << "MisraGries Heavy hitter items: \n";
+//    for (auto it = HH.begin(); it != HH.end(); ++it) {
+// 		std::cerr << "Item: " << it->second << " Count: " << it->first << "\n";
+// 	}
+
+
+// //    std::set<uint64_t> hh = mg.heavyHitters(0.01);
+// //     for (auto it = hh.begin(); it !=
+// //                              hh.end(); ++it)
+// //         cout << ' ' << *it;
+// }

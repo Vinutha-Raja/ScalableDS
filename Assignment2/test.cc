@@ -7,6 +7,9 @@
 #include <openssl/rand.h>
 #include <map>
 #include <unordered_map>
+#include "MisraGries.cc"
+#include "CountSketch.cc"
+#include "CountMinSketch.cc"
 
 #include "zipf.h"
 
@@ -28,6 +31,11 @@ int main(int argc, char** argv)
 	uint64_t N = atoi(argv[1]);
 	double tau = atof(argv[2]);
 	uint64_t *numbers = (uint64_t *)malloc(N * sizeof(uint64_t));
+
+	MisraGriesDS mg = MisraGriesDS(N, 1/tau);
+	CountSketch cs = CountSketch(N, 1/tau, 1/tau, tau);
+	CountMinSketch cms = CountMinSketch(N, 1/tau, 1/tau, tau);
+
 	if(!numbers) {
 		std::cerr << "Malloc numbers failed.\n";
 		exit(0);
@@ -41,10 +49,35 @@ int main(int argc, char** argv)
 	std::unordered_map<uint64_t, uint64_t> map(N);
 
 	t1 = high_resolution_clock::now();
-	for (uint64_t i = 0; i < N; ++i) 
+	for (uint64_t i = 0; i < N; ++i) {
 		map[numbers[i]]++;
+	}
 	t2 = high_resolution_clock::now();
 	std::cout << "Time to count " << N << " items: " << elapsed(t1, t2) << " secs\n";
+
+    // Adding to MG
+	t1 = high_resolution_clock::now();
+	for (uint64_t i = 0; i < N; ++i) {
+		mg.add(numbers[i]);
+	}
+	t2 = high_resolution_clock::now();
+	std::cout << "MisraGries: Time to count " << N << " items: " << elapsed(t1, t2) << " secs\n";
+
+   	// Adding to CountSketch
+	t1 = high_resolution_clock::now();
+	for (uint64_t i = 0; i < N; ++i) {
+		cs.add(numbers[i]);
+	}
+	t2 = high_resolution_clock::now();
+	std::cout << "CountSketch: Time to count " << N << " items: " << elapsed(t1, t2) << " secs\n";
+
+  	// Adding to CountMinSketch
+	t1 = high_resolution_clock::now();
+	for (uint64_t i = 0; i < N; ++i) {
+		cms.add(numbers[i]);
+	}
+	t2 = high_resolution_clock::now();
+	std::cout << "CountMinSketch: Time to count " << N << " items: " << elapsed(t1, t2) << " secs\n";
 
 	free(numbers); // free stream
 
@@ -72,12 +105,39 @@ int main(int argc, char** argv)
 	}
 	t2 = high_resolution_clock::now();
 	std::cout << "Time to compute phi-heavy hitter items: " << elapsed(t1, t2) << " secs\n";
+	std::cout << "Total number of phi-hitters: "<<topK.size()<<endl;
 	assert(total == N);
 
 	std::cout << "Heavy hitter items: \n";
 	for (auto it = topK.begin(); it != topK.end(); ++it) {
-		std::cerr << "Item: " << it->second << " Count: " << it->first << "\n";
+		std::cout << "Item: " << it->second << " Count: " << it->first << "\n";
 	}
+
+
+	// MisraGries Compute HeavyHitters
+	std::multimap<uint64_t, uint64_t, std::greater<uint64_t> > HH = mg.heavyHitters(tau);
+	std::cout << "MisraGries Heavy hitter items: \n";
+	std::cout << "Total number of phi-hitters: "<< HH.size()<<endl;
+	for (auto it = HH.begin(); it != HH.end(); ++it) {
+		std::cout << "Item: " << it->second << " Count: " << it->first << "\n";
+	}
+
+	// CountSketch Compute HeavyHitters
+	std::map<uint64_t, uint64_t, std::greater<uint64_t> > HHCS = cs.heavyHitters(tau);
+	std::cout << "CountSketch Heavy hitter items: \n";
+	std::cout << "Total number of phi-hitters: "<< HHCS.size()<<endl;
+	for (auto it = HHCS.begin(); it != HHCS.end(); ++it) {
+		std::cout << "Item: " << it->second << " Count: " << it->first << "\n";
+	}
+
+	// CountMinSketch Compute HeavyHitters
+	std::map<uint64_t, uint64_t, std::greater<uint64_t> > HHCMS = cms.heavyHitters(tau);
+	std::cout << "CountMinSketch Heavy hitter items: \n";
+	std::cout << "Total number of phi-hitters: "<< HHCMS.size()<<endl;
+	for (auto it = HHCMS.begin(); it != HHCMS.end(); ++it) {
+		std::cout << "Item: " << it->second << " Count: " << it->first << "\n";
+	}
+
 	return 0;
 }
 
