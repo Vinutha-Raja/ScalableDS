@@ -107,36 +107,57 @@ int main(int argc, char** argv)
 	std::cout << "Time to compute phi-heavy hitter items: " << elapsed(t1, t2) << " secs\n";
 	std::cout << "Total number of phi-hitters: "<<topK.size()<<endl;
 	assert(total == N);
-
+    std::set <uint64_t> heavyHitters;
 	std::cout << "Heavy hitter items: \n";
 	for (auto it = topK.begin(); it != topK.end(); ++it) {
 		std::cout << "Item: " << it->second << " Count: " << it->first << "\n";
+		heavyHitters.insert(it->second);
 	}
 
 
 	// MisraGries Compute HeavyHitters
 	std::multimap<uint64_t, uint64_t, std::greater<uint64_t> > HH = mg.heavyHitters(tau);
-	std::cout << "MisraGries Heavy hitter items: \n";
-	std::cout << "Total number of phi-hitters: "<< HH.size()<<endl;
+	std::cout << "MisraGries: Heavy hitter items: \n";
+	std::cout << "MisraGries: Total number of phi-hitters: "<< HH.size()<<endl;
+	int relevant_item_count = 0;
+
 	for (auto it = HH.begin(); it != HH.end(); ++it) {
 		std::cout << "Item: " << it->second << " Count: " << it->first << "\n";
+		if (heavyHitters.find(it->second) != heavyHitters.end()) {
+			relevant_item_count++;
+		}
 	}
+	std::cout << "MisraGries: Precision of phi-hitters: "<< (double)relevant_item_count/HH.size()<<endl;
+	std::cout << "MisraGries: Recall of phi-hitters: "<< (double)relevant_item_count/topK.size()<<endl;
 
 	// CountSketch Compute HeavyHitters
+	std::cout << "CountSketch: Heavy hitter items: \n";
 	std::map<uint64_t, uint64_t, std::greater<uint64_t> > HHCS = cs.heavyHitters(tau);
-	std::cout << "CountSketch Heavy hitter items: \n";
-	std::cout << "Total number of phi-hitters: "<< HHCS.size()<<endl;
+	std::cout << "CountSketch: Total number of phi-hitters: "<< HHCS.size()<<endl;
+	relevant_item_count = 0;
 	for (auto it = HHCS.begin(); it != HHCS.end(); ++it) {
-		std::cout << "Item: " << it->second << " Count: " << it->first << "\n";
+		std::cout << "Item: " << it->first << " Count: " << it->second << "\n";
+		if (heavyHitters.find(it->first) != heavyHitters.end()) {
+			relevant_item_count++;
+		}
 	}
+	std::cout << "CountSketch: Precision of phi-hitters: "<< std::setprecision(5)<<(double)relevant_item_count/HHCS.size()<<endl;
+	std::cout << "CountSketch: Recall of phi-hitters: "<< std::setprecision(5)<<(double)relevant_item_count/topK.size()<<endl;
+
 
 	// CountMinSketch Compute HeavyHitters
 	std::map<uint64_t, uint64_t, std::greater<uint64_t> > HHCMS = cms.heavyHitters(tau);
-	std::cout << "CountMinSketch Heavy hitter items: \n";
-	std::cout << "Total number of phi-hitters: "<< HHCMS.size()<<endl;
+	std::cout << "CountMinSketch: Heavy hitter items: \n";
+	std::cout << "CountMinSketch: Total number of phi-hitters: "<< HHCMS.size()<<endl;
+	relevant_item_count = 0;
 	for (auto it = HHCMS.begin(); it != HHCMS.end(); ++it) {
-		std::cout << "Item: " << it->second << " Count: " << it->first << "\n";
+		std::cout << "Item: " << it->first << " Count: " << it->second << "\n";
+		if (heavyHitters.find(it->first) != heavyHitters.end()) {
+			relevant_item_count++;
+		}
 	}
+	std::cout << "CountMinSketch: Precision of phi-hitters: "<< std::setprecision(5)<<(double)relevant_item_count/HHCMS.size()<<endl;
+	std::cout << "CountMinSketch: Recall of phi-hitters: "<< std::setprecision(5)<<(double)relevant_item_count/topK.size()<<endl;
 
 	return 0;
 }
