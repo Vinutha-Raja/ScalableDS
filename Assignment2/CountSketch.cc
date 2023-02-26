@@ -57,8 +57,9 @@ public:
     void add(uint64_t num) {
         N += 1;
         for (int i = 0; i < T; i++) {
-            uint64_t j = MurmurHash64A(&num, 1, H[i]) % K;
+            // uint64_t j = MurmurHash64A(&num, 1, H[i]) % K;
             // int j = (H[i] * num) % K;
+            uint64_t j = MurmurHash64A(&num, sizeof(num), H[i]) % K;
             C[i][j] = C[i][j] + rand_array[(S[i] * num) % 2];
         }
 
@@ -107,10 +108,10 @@ public:
 
     double estimate(uint64_t num) {
         double f[T];
-        uint64_t *n = &num;
+        // uint64_t *n = &num;
         for (int i = 0; i < T; i++) {
 
-            uint64_t j = MurmurHash64A(n, 1, H[i]) % K;
+            uint64_t j = MurmurHash64A(&num, sizeof(num), H[i]) % K;
             // int j = (H[i] * num) % K;
             f[i] = (double) ((rand_array[(S[i] * num) % 2] ) * C[i][j] ) ;
         }
