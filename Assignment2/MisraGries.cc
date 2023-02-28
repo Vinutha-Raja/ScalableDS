@@ -16,8 +16,8 @@ public:
     uint64_t *Y;
     uint64_t *C;
 
-    MisraGriesDS(uint64_t n, uint64_t k){
-        N = n;
+    MisraGriesDS(uint64_t k){
+        N = 0;
         K = k;
         Y = (uint64_t *)malloc(K * sizeof(uint64_t));
         C = (uint64_t *)malloc(K * sizeof(uint64_t));
@@ -26,8 +26,14 @@ public:
             C[i] = 0;
         }
     }
+    }
+    
+    uint64_t size() {
+        return 2 * K * sizeof(uint64_t);
+    }
 
     void add(uint64_t num) {
+        N += 1;
         for (uint64_t i = 0; i < K; ++i) {
             if (Y[i] == num) {
                 C[i] = C[i] + 1;

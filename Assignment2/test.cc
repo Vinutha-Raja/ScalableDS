@@ -6,6 +6,7 @@
 #include <chrono>
 #include <openssl/rand.h>
 #include <map>
+#include <type_traits>
 #include <unordered_map>
 #include "MisraGries.cc"
 #include "CountSketch.cc"
@@ -31,10 +32,13 @@ int main(int argc, char** argv)
 	uint64_t N = atoi(argv[1]);
 	double tau = atof(argv[2]);
 	uint64_t *numbers = (uint64_t *)malloc(N * sizeof(uint64_t));
+	uint64_t K = 500;
+	int T = 20;
+	cout<<" K: "<<K<< " T: "<<T<<endl;
 
-	MisraGriesDS mg = MisraGriesDS(N, 1/tau);
-	CountSketch cs = CountSketch(N, 1/tau, 1/tau, tau);
-	CountMinSketch cms = CountMinSketch(N, 1/tau, 1/tau, tau);
+	MisraGriesDS mg = MisraGriesDS(K);
+	CountSketch cs = CountSketch(K, T, tau);
+	CountMinSketch cms = CountMinSketch(K, T, tau);
 
 	if(!numbers) {
 		std::cerr << "Malloc numbers failed.\n";
@@ -110,7 +114,7 @@ int main(int argc, char** argv)
     std::set <uint64_t> heavyHitters;
 	std::cout << "Heavy hitter items: \n";
 	for (auto it = topK.begin(); it != topK.end(); ++it) {
-		std::cout << "Item: " << it->second << " Count: " << it->first << "\n";
+		// std::cout << "Item: " << it->second << " Count: " << it->first << "\n";
 		heavyHitters.insert(it->second);
 	}
 
@@ -122,13 +126,14 @@ int main(int argc, char** argv)
 	int relevant_item_count = 0;
 
 	for (auto it = HH.begin(); it != HH.end(); ++it) {
-		std::cout << "Item: " << it->second << " Count: " << it->first << "\n";
+		// std::cout << "Item: " << it->second << " Count: " << it->first << "\n";
 		if (heavyHitters.find(it->second) != heavyHitters.end()) {
 			relevant_item_count++;
 		}
 	}
 	std::cout << "MisraGries: Precision of phi-hitters: "<< (double)relevant_item_count/HH.size()<<endl;
 	std::cout << "MisraGries: Recall of phi-hitters: "<< (double)relevant_item_count/topK.size()<<endl;
+	std::cout << "MisraGries: Sketch Size: "<< mg.size()<<endl;
 
 	// CountSketch Compute HeavyHitters
 	std::cout << "CountSketch: Heavy hitter items: \n";
@@ -136,13 +141,14 @@ int main(int argc, char** argv)
 	std::cout << "CountSketch: Total number of phi-hitters: "<< HHCS.size()<<endl;
 	relevant_item_count = 0;
 	for (auto it = HHCS.begin(); it != HHCS.end(); ++it) {
-		std::cout << "Item: " << it->first << " Count: " << it->second << "\n";
+		// std::cout << "Item: " << it->first << " Count: " << it->second << "\n";
 		if (heavyHitters.find(it->first) != heavyHitters.end()) {
 			relevant_item_count++;
 		}
 	}
 	std::cout << "CountSketch: Precision of phi-hitters: "<< std::setprecision(5)<<(double)relevant_item_count/HHCS.size()<<endl;
 	std::cout << "CountSketch: Recall of phi-hitters: "<< std::setprecision(5)<<(double)relevant_item_count/topK.size()<<endl;
+	std::cout << "CountSketch: Sketch Size: "<< cs.size()<<endl;
 
 
 	// CountMinSketch Compute HeavyHitters
@@ -151,13 +157,14 @@ int main(int argc, char** argv)
 	std::cout << "CountMinSketch: Total number of phi-hitters: "<< HHCMS.size()<<endl;
 	relevant_item_count = 0;
 	for (auto it = HHCMS.begin(); it != HHCMS.end(); ++it) {
-		std::cout << "Item: " << it->first << " Count: " << it->second << "\n";
+		// std::cout << "Item: " << it->first << " Count: " << it->second << "\n";
 		if (heavyHitters.find(it->first) != heavyHitters.end()) {
 			relevant_item_count++;
 		}
 	}
 	std::cout << "CountMinSketch: Precision of phi-hitters: "<< std::setprecision(5)<<(double)relevant_item_count/HHCMS.size()<<endl;
 	std::cout << "CountMinSketch: Recall of phi-hitters: "<< std::setprecision(5)<<(double)relevant_item_count/topK.size()<<endl;
+	std::cout << "CountMinSketch: Sketch Size: "<< cms.size()<<endl;
 
 	return 0;
 }

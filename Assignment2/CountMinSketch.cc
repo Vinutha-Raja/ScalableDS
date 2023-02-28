@@ -16,18 +16,16 @@ public:
     typedef pair<uint64_t, uint64_t> p;
     uint64_t N;
     uint64_t K;
-    int rand_array[2] = {-1, 1};
     int T;
     int* H;
-    int* S;
     int** C;
     double phi;
-    std::map<uint64_t, uint64_t, std::greater<uint64_t> > heavyhitters;
+    // std::map<uint64_t, uint64_t, std::greater<uint64_t> > heavyhitters;
     std::map<uint64_t, uint64_t, std::greater<uint64_t> > heavyhitters_final;
     priority_queue<p, vector<p>, greater<p> > pq;
 
-    CountMinSketch(uint64_t n, uint64_t k, int t, double phi_val){
-        N = n;
+    CountMinSketch(uint64_t k, int t, double phi_val){
+        N = 0;
         K = k;
         T = t;
         phi = phi_val;
@@ -37,7 +35,7 @@ public:
             C[i] = new int[K];
         }
 
-        for (uint64_t i = 0; i < K; ++i) {
+        for (int i = 0; i < T; ++i) {
             H[i] = std::experimental::randint(0, (int)N); 
         }   
 
@@ -49,7 +47,13 @@ public:
 
     }
 
+    uint64_t size() {
+        uint64_t s = T * K * sizeof(uint64_t);
+        return s;
+    }
+
     void add(uint64_t num) {
+        N += 1; 
         for (int i = 0; i < T; i++) {
 
             // int j = (H[i] * num) % K;
